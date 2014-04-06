@@ -2,8 +2,8 @@
 # coding=utf8
 
 import BotModule, pprint
-from ircbot import SingleServerIRCBot
-from irclib import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad, ip_quad_to_numstr
+from irc.bot import SingleServerIRCBot
+from irc.client import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad, ip_quad_to_numstr
 
 import os, sys, pyclbr, random, time, datetime, itertools, traceback
 
