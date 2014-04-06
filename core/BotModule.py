@@ -1,9 +1,14 @@
 #! /usr/bin/env python
 # coding=utf8
 
+import abc
+
 # Baseclass of all modules, handles important stuff
 class BotModule(object):
+	__metaclass__ = abc.ABCMeta
+
 	def __init__(self):
+		self.bot = None
 		return
 
 	def tick(self):
@@ -11,17 +16,18 @@ class BotModule(object):
 
 	def onMessage(self, type, msg):
 		return
-	
-	def setup(self, nick,  private, public, privaction, pubaction, isOper, kick, debug, users):
-		self.nick = nick
-		self.sendPrivateMessage = private
-		self.sendPublicMessage = public
-		self.sendPrivateAction = privaction
-		self.sendPublicAction = pubaction
-		self.isOper = isOper
-		self.kick = kick
-		self.DEBUG = debug
-		self.getAllUsers = users
+
+	def setup(self, bot):
+		self.bot = bot
+		self.nick = bot.nick
+		self.sendPrivateMessage = bot.sendPrivateMessage
+		self.sendPublicMessage = bot.sendPublicMessage
+		self.sendPrivateAction = bot.sendPrivateAction
+		self.sendPublicAction = bot.sendPublicAction
+		self.isOper = bot.isOper
+		self.kick = bot.kick
+		self.DEBUG = bot.DEBUG
+		self.getAllUsers = bot.getAllUsers
 
 # An example on howto write modules
 class HelloWorldExample(BotModule):

@@ -115,7 +115,6 @@ class FSIBot(SingleServerIRCBot):
 	def kick(self, nick, message):
 		self.connection.kick(self.channel, nick, message)
 
-
 	# Adds a module to the module list
 	def addModule(self, module):
 		self.loadModule(module)
@@ -124,7 +123,7 @@ class FSIBot(SingleServerIRCBot):
 	def loadModule(self, module):
 		mod = __import__(module)
 		modobj = getattr(mod, module)() #eval("mod." + module + "()")
-		modobj.setup(self.nick, self.sendPrivateMessage, self.sendPublicMessage, self.sendPrivateAction, self.sendPublicAction, self.isOper, self.kick, self.DEBUG, self.getAllUsers)
+		modobj.setup(self)
 		self.activeModules.append(modobj)
 
     # Reload all modules
