@@ -2,6 +2,7 @@
 # coding=utf8
 
 from BotModule import BotModule
+from BotCommand import BotCommand
 import twitter, time, HTMLParser, config
 
 class TwitterModule(BotModule):
@@ -91,8 +92,14 @@ class TwitterModule(BotModule):
 		self.last_tick = cur_time
 
 
-	def command(self, nick, cmd, args, type):
-		if cmd == '!t' or cmd == '!twitter':
+	def command(self, command):
+		nick = command.origin
+		args = command.args
+		type = 'public'
+		if command.type is BotCommand.PRIVATE:
+			type = 'private'
+			
+		if command.command == '!t' or command.command == '!twitter':
 			if len(args) == 0:
 				self.answer(type, nick, "TwitterModule expects at least 1 parameter!")
 				return

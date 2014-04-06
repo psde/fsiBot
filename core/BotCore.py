@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 # coding=utf8
 
-import BotModule, pprint
+import BotModule, pprint 
+from BotCommand import BotCommand
 from irc.bot import SingleServerIRCBot
 from irc.client import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad, ip_quad_to_numstr
 
@@ -307,7 +308,16 @@ class FSIBot(SingleServerIRCBot):
 		for module in self.activeModules:
 			try:
 				if cmd.startswith("!"):
-					module.command(nick, cmd, args, type)
+
+					newType = BotCommand.UNKNOWN
+
+					if type == 'public':
+						newType = BotCommand.PUBLIC
+					if type == 'private':
+						newType = BotCommand.PRIVATE
+
+					module.command(BotCommand(self, nick, newType, cmd, args))
+					#module.command(nick, cmd, args, type)
 				else:
 					module.onMessage(type, e.arguments()[0])
 			except Exception as e:

@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 # coding=utf8
+
 from BotModule import BotModule
+from BotCommand import BotCommand
 
 import urllib, json
 
@@ -8,25 +10,19 @@ class WeatherModule(BotModule):
 	def __init__(self):
 		return
 
-	def command(self, nick, cmd, args, type):
-		if cmd == "!wetter":
+	def command(self, command):
+		if command.command == "!wetter":
 			postalcode = "karlsruhe"
-			if len(args) > 0:
-				postalcode = ' '.join(args).lower()
+			if len(command.args) > 0:
+				postalcode = ' '.join(command.args).lower()
 
 			if postalcode.startswith('honoluluu'):
 				answer = 'Computer sagt: NEIN!'
-				if type == 'public':
-					self.sendPublicMessage(answer)
-				else :
-					self.sendPrivateMessage(nick, answer)
+				command.answer(answer)
 				return
 			elif postalcode == 'mêlée island':
 				answer = 'Dublonen, Dublonen!'
-				if type == 'public':
-					self.sendPublicMessage(answer)
-				else :
-					self.sendPrivateMessage(nick, answer)
+				command.answer(answer)
 				return
 
 			try:
@@ -55,26 +51,17 @@ class WeatherModule(BotModule):
 			if jsondata['cod'] != '200':
 				if jsondata['message'] != '':
 					answer = 'Leck? welches Leck?'
-					if type == 'public':
-						self.sendPublicMessage(answer)
-					else :
-						self.sendPrivateMessage(nick, answer)
+					command.answer(answer)
 				return
 
 			if len(jsondata['list']) < 1:
 				answer = 'Leck? welches Leck?'
-				if type == 'public':
-					self.sendPublicMessage(answer)
-				else :
-					self.sendPrivateMessage(nick, answer)
+				command.answer(answer)
 				return
 
 			elif len(jsondata['list']) > 1:
 				answer = 'Mr Cotton´s Papagei! Die selbe Frage!'
-				if type == 'public':
-					self.sendPublicMessage(answer)
-				else :
-					self.sendPrivateMessage(nick, answer)
+				command.answer(answer)
 				return
 
 			weather = {}
@@ -104,12 +91,12 @@ class WeatherModule(BotModule):
 			if 'rain_last_1h' in weather:
 				answer += ", rain last 1h: %.3fl/m²" % weather['rain_last_1h']
 
-			if type == 'public':
+			if command.type == BotCommand.PUBLIC:
 				self.sendPublicMessage(answer)
 
 				if weather['temp'] > 30:
 					self.sendPublicMessage('Willkommen in der der Karibik, Schätzchen!')
-			else :
+			else:
 				self.sendPrivateMessage(nick, answer)
 
 

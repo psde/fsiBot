@@ -126,12 +126,12 @@ class MensaModule(BotModule):
 		
 			self.lastDaily = time.time()
 
-	def command(self, nick, cmd, args, type):
-		if cmd == "!mensa":
+	def command(self, command):
+		if command.command == "!mensa":
 			try:
 				dayOffset = 0
-				if len(args) == 1:
-					time = args[0].lower()
+				if len(command.args) == 1:
+					time = command.args[0].lower()
 					if time == "heute" or time == "today":
 						dayOffset = 0
 					elif time == "morgen" or time == "tomorrow":
@@ -139,23 +139,23 @@ class MensaModule(BotModule):
 					elif time == "übermorgen" or time == "uebermorgen":
 						dayOffset = 2
 					else:
-						dayOffset = toInt(args[0])
+						dayOffset = toInt(command.args[0])
 
 				if dayOffset < 0 or dayOffset >= 5:
-					self.sendPrivateMessage(nick, "Mensa: Fehler, Tagesoffset ausserhalb der gültigen Reichweite.")
+					self.sendPrivateMessage(command.origin, "Mensa: Fehler, Tagesoffset ausserhalb der gültigen Reichweite.")
 					return
 
 				mensaplan = self.buildMensaplan(dayOffset)
 
 				if len(mensaplan) == 0:
-					self.sendPrivateMessage(nick, "Keine Gerichte gefunden.")
+					self.sendPrivateMessage(command.origin, "Keine Gerichte gefunden.")
 				else:
-					self.sendPrivateMessage(nick, "Mensaplan via http://tinyurl.com/mensa-moltke")
+					self.sendPrivateMessage(command.origin, "Mensaplan via http://tinyurl.com/mensa-moltke")
 					for s in mensaplan:
-						self.sendPrivateMessage(nick, s)
+						self.sendPrivateMessage(command.origin, s)
 
 			except:
-				self.sendPrivateMessage(nick, "Exception returned. Fixme!")
+				self.sendPrivateMessage(command.origin, "Exception returned. Fixme!")
 				
 
 	def help(self, nick):

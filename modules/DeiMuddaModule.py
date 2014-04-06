@@ -20,15 +20,15 @@ class DeiMuddaModule(BotModule):
 	def __init__(self):
 		return
 
-	def command(self, nick, cmd, args, type):
-		if cmd == "!dm" or cmd == "!deimudda":
+	def command(self, command):
+		if command.command == "!dm" or command.command == "!deimudda":
 			bofile = open(os.path.abspath(os.path.dirname(sys.argv[0])) + "/deimudda", "r")
 
 			# Fetch best of dei mudda.
 			bo = []
 			for line in bofile:
 				if line.startswith("  *"):
-					if len(args) == 0 or isOccuring(line, args, True):
+					if len(args) == 0 or isOccuring(line, command.args, True):
 						bo.append('"' + line[4:].replace("\n", "") + '" via http://hska.info/deimudda')
 			line = ""	
 			if len(bo) == 0:
@@ -36,10 +36,7 @@ class DeiMuddaModule(BotModule):
 			else:
 				line = bo[random.randint(0, len(bo)-1)]
 
-			if type == "private":
-				self.sendPrivateMessage(nick, line)
-			else:
-				self.sendPublicMessage(line)
+			command.answer(line)
 
 	def help(self, nick):
 		self.sendPrivateMessage(nick, "!deimudda/!dm [stichwort] - Dei Mudda, Junge. (http://hska.info/deimudda).")

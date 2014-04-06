@@ -20,8 +20,8 @@ class BestOfModule(BotModule):
 	def __init__(self):
 		return
 
-	def command(self, nick, cmd, args, type):
-		if cmd == "!bo" or cmd == "!bestof":
+	def command(self, command):
+		if command.command == "!bo" or command.command == "!bestof":
 			bofile = open(os.path.abspath(os.path.dirname(sys.argv[0])) + "/bestof", "r")
 
 			# Fetch best of quotes.
@@ -31,7 +31,7 @@ class BestOfModule(BotModule):
 				if line.startswith("===="):
 					author = line[5:].replace(" ====", "").replace("\n", "")
 				if line.startswith("  *"):
-					if len(args) == 0 or isOccuring(line, args, True) or isOccuring(author, args, True):
+					if len(args) == 0 or isOccuring(line, command.args, True) or isOccuring(author, command.args, True):
 						bo.append('"' + line[4:].replace("\n", "") + '" -- ' + author + ', via http://hska.info/bestof')
 			line = ""	
 			if len(bo) == 0:
@@ -39,10 +39,7 @@ class BestOfModule(BotModule):
 			else:
 				line = bo[random.randint(0, len(bo)-1)]
 
-			if type == "private":
-				self.sendPrivateMessage(nick, line)
-			else:
-				self.sendPublicMessage(line)
+			command.answer(line)
 
 	def help(self, nick):
 		self.sendPrivateMessage(nick, "!bestof/!bo [Stichwort] - Zeigt eines der Best-Of Kommentare eines Profs an (http://hska.info/bestof).")

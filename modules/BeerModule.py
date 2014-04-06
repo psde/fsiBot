@@ -2,6 +2,7 @@
 # coding=utf8
 
 from BotModule import BotModule
+from BotCommand import BotCommand
 
 from time import *
 
@@ -11,12 +12,12 @@ class BeerModule(BotModule):
 	def __init__(self):
 		return
 
-	def command(self, nick, cmd, args, type):
+	def command(self, command):
 		lt = localtime()	
-		if type == 'public' and (cmd == "!beer" or cmd == "!bier"):
+		if command.command == "!beer" or command.command == "!bier":
 			if 6 < lt[3] < 16:
 				line = "Kein Bier vor 4!"
-				self.sendPublicMessage(line)
+				command.answer(line)
 			else:
 				schmack = random.choice(["leckeres", "wohltuendes", "wohlschmeckendes", "eisgekühltes", "lauwarmes", "abgestandenes", "schales"])
 				beer = random.choice(["Tannenzäpfle", "Höpfner", "Leikeim", "Becks", "Jever", "Öttinger", "Palmbräu", "Andechser Doppelbock", "Kölsch", "Veltins"])
@@ -28,7 +29,7 @@ class BeerModule(BotModule):
 					compliment = " Mit freundlichen Grüßen von " + nick
 				line = "gibt " + reciever + " ein " + schmack + " " + beer + "." + compliment
 
-				self.sendPublicAction(line)
+				command.answer(line)
 
 	def help(self, nick):
 		self.sendPrivateMessage(nick, "!bier/!beer - Verteilt Bier.")

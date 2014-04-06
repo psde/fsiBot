@@ -124,7 +124,7 @@ class LinkTitleModule(BotModule):
 							print(newUrl + ": No title found")
 
 
-	def command(self, nick, cmd, args, type):
+	def command(self, command):
 		return
 	def help(self, nick):
 		return

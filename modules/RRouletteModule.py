@@ -2,6 +2,7 @@
 # coding=utf8
 
 from BotModule import BotModule
+from BotCommand import BotCommand
 
 import os, sys, random, time
 
@@ -21,23 +22,23 @@ class RRouletteModule(BotModule):
 		
 		return rev
 
-	def command(self, nick, cmd, args, type):
+	def command(self, command):
 		# let em shoot
-		if cmd == '!roulette' and type == 'public':
+		if command.command == '!roulette' and command.type == BotCommand.PUBLIC:
 			# Reload revolver if ppl havent played in a while
 			if len(self.revolver) != self.size and time.time() > self.lastShot + 60*60*2:
 				self.revolver = self.reload()
 				self.sendPublicMessage('Neues Glück: Trommel aus ' + str(self.size) + ' Männer-Bonbon-Fächern... Ein Bonbon ist drin und tödlich.')
 
 			if self.revolver.pop() == 'bullet':
-				line = 'Bang!! ' + nick + ' geht von uns wie ein echter Mann...'
+				line = 'Bang!! ' + command.origin + ' geht von uns wie ein echter Mann...'
 				self.sendPublicMessage(line)
-				self.kick(nick, line)
+				self.kick(command.origin, line)
 				self.revolver = self.reload()
 				self.sendPublicMessage('Neues Glück: Trommel aus ' + str(self.size) + ' Männer-Bonbon-Fächern... Ein Bonbon ist drin und tödlich.')
 
 			else:
-				self.sendPublicMessage('*click* - ' + nick + ' ist ein Glückspilz. Nächster?')
+				self.sendPublicMessage('*click* - ' + command.origin + ' ist ein Glückspilz. Nächster?')
 			self.lastShot = time.time()
 
 		return
