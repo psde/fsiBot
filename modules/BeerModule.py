@@ -20,7 +20,7 @@ class BeerModule(BotModule):
 			else:
 				schmack = random.choice(["leckeres", "wohltuendes", "wohlschmeckendes", "eisgekühltes", "lauwarmes", "abgestandenes", "schales"])
 				beer = random.choice(["Tannenzäpfle", "Höpfner", "Leikeim", "Becks", "Jever", "Öttinger", "Palmbräu", "Andechser Doppelbock", "Kölsch", "Veltins"])
-
+				
 				compliment = ""
 				reciever = nick
 				if len(args) > 0:

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # coding=utf8
 
-import BotModule
+import BotModule, pprint
 from ircbot import SingleServerIRCBot
 from irclib import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad, ip_quad_to_numstr
 
@@ -124,7 +124,7 @@ class FSIBot(SingleServerIRCBot):
 	def loadModule(self, module):
 		mod = __import__(module)
 		modobj = getattr(mod, module)() #eval("mod." + module + "()")
-		modobj.setup(self.nick, self.sendPrivateMessage, self.sendPublicMessage, self.sendPrivateAction, self.sendPublicAction, self.kick, self.DEBUG)
+		modobj.setup(self.nick, self.sendPrivateMessage, self.sendPublicMessage, self.sendPrivateAction, self.sendPublicAction, self.isOper, self.kick, self.DEBUG, self.getAllUsers)
 		self.activeModules.append(modobj)
 
     # Reload all modules
@@ -146,16 +146,19 @@ class FSIBot(SingleServerIRCBot):
 	# Checks modules/ for available modules (every class that is derrived from BotModule)
 	def getAvailableModules(self):
 		availableModules = []
+		pp = pprint.PrettyPrinter(indent=4)
+
 		for file in os.listdir(os.path.dirname("modules/")):
 			if file.endswith(".py"):
 				cl = pyclbr.readmodule(file[:-3])
 				for k, v in cl.items():
 					name = v.name
 					base = v.super
-	
+
 					if not isinstance(v.super, str):
-						if not isinstance(v.super[0], str):
+						if len(v.super) > 0 and not isinstance(v.super[0], str):
 							base = v.super[0].name
+
 					if "BotModule" in base:
 						availableModules.append(name)
 		return availableModules
@@ -325,6 +328,22 @@ class FSIBot(SingleServerIRCBot):
 		userfile.write(str(users))
 		userfile.close()
 		#self.log("Logged " + str(users) + " users")
+
+	def getAllUsers(self, nick, mode):
+		items = list()
+		if self.isOper(nick) is True:
+			
+			for chname, chobj in self.channels.items():
+					if mode == "all":						
+						items = chobj.users()
+
+					elif mode == "fs":
+						for user in chobj.users():
+							if chobj.is_oper(user) is True:
+								items.append(user)
+			items.remove(nick)
+
+		return items
 
 	# Sends information string to webchat users coming from our site
 	def inform_webusers(self, c, e):
